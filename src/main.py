@@ -1,7 +1,9 @@
 '''
 Module docstring.
 '''
+import asyncio
 from aiohttp import web
+import db.psql_client as db_psql
 
 
 ROUTES = web.RouteTableDef()
@@ -35,9 +37,21 @@ async def name_post(req):
         return web.Response(status=400)
     return web.Response()
 
+
+async def init_app():
+    '''
+    Initialize the application server
+    '''
+    app = web.Application()
+
+    app['pool'] = await db_psql.init_db()
+
+    app.add_routes(ROUTES)
+
+    return app
+
+
 if __name__ == '__main__':
-    APP = web.Application()
-
-    APP.add_routes(ROUTES)
-
+    LOOP = asyncio.get_event_loop()
+    APP = LOOP.run_until_complete(init_app())
     web.run_app(APP)
