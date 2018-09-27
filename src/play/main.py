@@ -1,12 +1,12 @@
 '''
 Testing ground!
 '''
-import asyncio
 from aiohttp import web
 import db.psql_client as pg_cli
 
 
 ROUTES = web.RouteTableDef()
+
 
 @ROUTES.get('/name/{name}')
 async def name_handle(req):
@@ -18,7 +18,10 @@ async def name_handle(req):
 
     statement = await pg_cli.retrieve_name_statement(req, name)
 
-    text = text + str(statement[0]) + '\n'
+    if statement is False:
+        return web.Response(status=404)
+
+    text = text + str(statement) + '\n'
 
     return web.Response(text=text)
 

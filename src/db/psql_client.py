@@ -4,25 +4,35 @@ This module connects us to our postgreSQL instance
 import os
 import asyncpg as pg
 
+
 async def init_db():
+    '''
+    Initialize our database and create a connection pool.
+    '''
     user = os.environ['PSQL_USER']
     database = os.environ['PSQL_DB']
     password = os.environ['PSQL_PASS']
+
     return await pg.create_pool(
         database=database,
         user=user,
         password=password
     )
 
+
 def get_pool(req):
+    '''
+    Return the connection pool from an incoming request object
+    '''
     return req.app['pool']
+
 
 async def insert_name_statement(req, name, statement):
     '''
-    Inserts a statement into a named tuple
+    Associate a statement with a fictional character
     '''
     pool = get_pool(req)
-    print('uhohhh')
+
     async with pool.acquire() as connection:
         async with connection.transaction():
             stmt = await connection.execute('''
@@ -31,15 +41,20 @@ async def insert_name_statement(req, name, statement):
                                             ''', name, statement)
             return stmt
 
+
 async def retrieve_name_statement(req, name):
     '''
-    Retrieves something we stored
+    Retrieves a statement from a fictional character
     '''
     pool = get_pool(req)
+
     async with pool.acquire() as connection:
         async with connection.transaction():
-            stmt = await connection.fetch('''
+            stmt = await connection.fetchrow('''
                                         SELECT state FROM state
                                         WHERE $1 = name
                                           ''', name)
-            return stmt
+            if stmt is None:
+                return False
+            else:
+                return str(stmt['state'])
