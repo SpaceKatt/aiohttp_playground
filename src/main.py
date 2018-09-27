@@ -19,7 +19,7 @@ async def root_handle(req):
     '''
     Tells the malcontent to go root themselves off our lawn.
     '''
-    return web.Response(status=401, text='Root off our lawn.\n')
+    return web.Response(status=400, text='Root off our lawn.\n')
 
 
 async def init_app():
