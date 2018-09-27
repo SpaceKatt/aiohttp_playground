@@ -3,7 +3,7 @@ Module docstring.
 '''
 import asyncio
 from aiohttp import web
-import db.psql_client as db_psql
+import db.psql_client as pg_cli
 
 
 ROUTES = web.RouteTableDef()
@@ -24,6 +24,11 @@ async def name_handle(req):
     '''
     name = req.match_info.get('name', 'Anon')
     text = 'Hello, ' + name + '\n'
+
+    statement = await pg_cli.retrieve_name_statement(req, name)
+
+    text = text + str(statement[0]) + '\n'
+
     return web.Response(text=text)
 
 
@@ -35,7 +40,11 @@ async def name_post(req):
     name = req.match_info.get('name', False)
     if name is False:
         return web.Response(status=400)
-    return web.Response()
+
+    data = await req.json()
+    statement = await pg_cli.insert_name_statement(req, name, data['state'])
+
+    return web.Response(text=str(statement))
 
 
 async def init_app():
@@ -44,7 +53,7 @@ async def init_app():
     '''
     app = web.Application()
 
-    app['pool'] = await db_psql.init_db()
+    app['pool'] = await pg_cli.init_db()
 
     app.add_routes(ROUTES)
 
