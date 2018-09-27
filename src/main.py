@@ -4,6 +4,7 @@ Module docstring.
 import asyncio
 from aiohttp import web
 import db.psql_client as pg_cli
+import play.main as play
 
 
 ROUTES = web.RouteTableDef()
@@ -17,36 +18,6 @@ async def root_handle(req):
     return web.Response(text=str(req.headers) + '\n')
 
 
-@ROUTES.get('/name/{name}')
-async def name_handle(req):
-    '''
-    Handles other routes
-    '''
-    name = req.match_info.get('name', 'Anon')
-    text = 'Hello, ' + name + '\n'
-
-    statement = await pg_cli.retrieve_name_statement(req, name)
-
-    text = text + str(statement[0]) + '\n'
-
-    return web.Response(text=text)
-
-
-@ROUTES.put('/name/{name}')
-async def name_post(req):
-    '''
-    Testing errors
-    '''
-    name = req.match_info.get('name', False)
-    if name is False:
-        return web.Response(status=400)
-
-    data = await req.json()
-    statement = await pg_cli.insert_name_statement(req, name, data['state'])
-
-    return web.Response(text=str(statement))
-
-
 async def init_app():
     '''
     Initialize the application server
@@ -56,6 +27,7 @@ async def init_app():
     app['pool'] = await pg_cli.init_db()
 
     app.add_routes(ROUTES)
+    app.add_routes(play.ROUTES)
 
     return app
 
