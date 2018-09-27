@@ -35,11 +35,16 @@ async def insert_name_statement(req, name, statement):
 
     async with pool.acquire() as connection:
         async with connection.transaction():
-            stmt = await connection.execute('''
-                                        INSERT INTO state (name, state)
-                                        VALUES ($1, $2)
-                                            ''', name, statement)
-            return stmt
+            try:
+                stmt = await connection.execute('''
+                                            INSERT INTO state (name, state)
+                                            VALUES ($1, $2)
+                                            RETURNING name_id
+                                                ''', name, statement)
+                print(stmt)
+                return str(stmt)
+            except pg.exceptions.UniqueViolationError:
+                return False
 
 
 async def retrieve_name_statement(req, name):
@@ -58,3 +63,25 @@ async def retrieve_name_statement(req, name):
                 return False
             else:
                 return str(stmt['state'])
+
+
+async def update_name_statement(req, name, statement):
+    '''
+    Associate a statement with a fictional character
+    '''
+    pool = get_pool(req)
+
+    async with pool.acquire() as connection:
+        async with connection.transaction():
+            stmt = await connection.execute('''
+                                        UPDATE state
+                                        SET state = $1
+                                        WHERE
+                                          name = $2
+                                            ''', statement, name)
+            if stmt is None or stmt == 'UPDATE 0':
+                return False
+            else:
+                return True
+            return False
+
