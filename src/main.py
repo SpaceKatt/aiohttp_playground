@@ -1,5 +1,5 @@
 '''
-Module docstring.
+Runs the webserver.
 '''
 from aiohttp import web
 import asyncio

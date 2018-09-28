@@ -2,7 +2,7 @@
 Testing ground!
 '''
 from aiohttp import web
-import db.psql_client as pg_cli
+import db.psql_play_client as pg_cli
 
 
 PREFIX = '/play'
