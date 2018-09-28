@@ -2,6 +2,9 @@
 Authentication module.
 '''
 from aiohttp import web
+from os import path
+
+import aiofiles
 import db.psql_client as pg_cli
 
 
@@ -14,7 +17,14 @@ async def root_handle(req):
     '''
     Health check.
     '''
-    return web.Response()
+    try:
+        file_path = path.join(path.dirname(path.abspath(__file__)),
+                              './docs/auth.md')
+        async with aiofiles.open(file_path, mode='r') as f:
+            content = await f.read()
+            return web.Response(text=content)
+    except Exception:
+        return web.Response(status=500)
 
 
 @ROUTES.post(PREFIX + '/register')

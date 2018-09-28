@@ -9,6 +9,7 @@ import db.psql_client as pg_cli
 
 # app routes
 import play.main as play
+import auth.main as auth
 
 
 ROUTES = web.RouteTableDef()
@@ -32,6 +33,7 @@ async def init_app():
 
     app.add_routes(ROUTES)
     app.add_routes(play.ROUTES)
+    app.add_routes(auth.ROUTES)
 
     return app
 
