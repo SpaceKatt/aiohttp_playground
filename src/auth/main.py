@@ -20,7 +20,7 @@ async def root_handle(req):
     '''
     try:
         file_path = path.join(path.dirname(path.abspath(__file__)),
-                              './docs/auth.md')
+                              '../static/auth.html')
         async with aiofiles.open(file_path, mode='r') as f:
             content = await f.read()
             return web.Response(text=content)
