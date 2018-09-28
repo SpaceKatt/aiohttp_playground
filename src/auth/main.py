@@ -3,6 +3,7 @@ Authentication module.
 '''
 from aiohttp import web
 from os import path
+import re
 
 import aiofiles
 import db.psql_client as pg_cli
@@ -27,12 +28,28 @@ async def root_handle(req):
         return web.Response(status=500)
 
 
+def valid_user_info(user_json):
+    if not user_json['username'].isalnum():
+        return False
+
+    # Validate email
+    if not re.match('[^@]+@[^@]+\.[^@]+', user_json['email']):
+        return False
+
+    return True
+
+
 @ROUTES.post(PREFIX + '/register')
 async def register_user(req):
     '''
     Registers a user.
     '''
-    pass
+    data = await req.json()
+
+    if not valid_user_info(data):
+        return web.Response(status=400)
+
+    return web.Response(status=201)
 
 
 @ROUTES.get(PREFIX + '/login')
