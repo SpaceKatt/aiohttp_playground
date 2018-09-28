@@ -1,17 +1,29 @@
 # Auth
 
-### Register a user
+---
 
-#### Request
+## Register a user
+
+### Request
+
+**Route**
+
 ```
 POST /auth/register
+```
 
-Headers:
+**Headers**
+
+```
 {
     Content-Type: application/json
 }
+```
 
-Body:
+
+**Body**
+
+```
 {
     username: <USER>,
     email: <EMAIL>,
@@ -19,7 +31,9 @@ Body:
 }
 ```
 
-#### Response
+### Response
 ```
 HTTP/1.1 201 Created
 ```
+
+---

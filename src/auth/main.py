@@ -23,7 +23,12 @@ async def root_handle(req):
                               '../static/auth.html')
         async with aiofiles.open(file_path, mode='r') as f:
             content = await f.read()
-            return web.Response(text=content)
+            return web.Response(
+                    body=content,
+                    headers={
+                        'Content-Type': 'text/html'
+                    },
+            )
     except Exception:
         return web.Response(status=500)
 
