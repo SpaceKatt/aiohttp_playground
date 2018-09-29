@@ -6,7 +6,7 @@ from os import path
 import re
 
 import aiofiles
-import db.psql_client as pg_cli
+import db.psql_auth_client as pg_cli
 
 
 PREFIX = '/auth'
@@ -16,7 +16,7 @@ ROUTES = web.RouteTableDef()
 @ROUTES.get(PREFIX)
 async def root_handle(req):
     '''
-    Health check.
+    Serves documentation.
     '''
     try:
         file_path = path.join(path.dirname(path.abspath(__file__)),
@@ -54,7 +54,12 @@ async def register_user(req):
     if not valid_user_info(data):
         return web.Response(status=400)
 
-    return web.Response(status=201)
+    result = await pg_cli.insert_new_user(req, data)
+
+    if result['status'] == 201:
+        return web.Response()
+    else:
+        return web.Response(status=result['status'], text=result['error'])
 
 
 @ROUTES.get(PREFIX + '/login')
