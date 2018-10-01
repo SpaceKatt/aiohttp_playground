@@ -3,6 +3,7 @@ Runs the webserver.
 '''
 from aiohttp import web
 import asyncio
+import uvloop
 
 # Database connection
 import db.psql_client as pg_cli
@@ -39,6 +40,8 @@ async def init_app():
 
 
 if __name__ == '__main__':
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     LOOP = asyncio.get_event_loop()
     APP = LOOP.run_until_complete(init_app())
 
