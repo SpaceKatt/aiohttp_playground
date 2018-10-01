@@ -4,6 +4,7 @@
 __pycache__/
 
 static/
+log/dc.log
 
 null/
 private/

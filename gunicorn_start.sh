@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 source .env
+export $(grep -v '^#' .env | xargs)
 
 cd src
-gunicorn --bind 0.0.0.0:8080 \
+gunicorn --bind 127.0.0.1:8080 \
          --worker-class aiohttp.GunicornUVLoopWebWorker \
-         --workers=9 \
          main:APP
