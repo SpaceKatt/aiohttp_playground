@@ -38,8 +38,9 @@ async def init_app():
     return app
 
 
-if __name__ == '__main__':
-    LOOP = asyncio.get_event_loop()
-    APP = LOOP.run_until_complete(init_app())
+LOOP = asyncio.get_event_loop()
+APP = LOOP.run_until_complete(init_app())
 
+
+if __name__ == '__main__':
     web.run_app(APP, host='127.0.0.1')
