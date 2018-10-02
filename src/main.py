@@ -39,10 +39,9 @@ async def init_app():
     return app
 
 
+LOOP = asyncio.get_event_loop()
+APP = LOOP.run_until_complete(init_app())
+
+
 if __name__ == '__main__':
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    LOOP = asyncio.get_event_loop()
-    APP = LOOP.run_until_complete(init_app())
-
     web.run_app(APP, host='127.0.0.1')
