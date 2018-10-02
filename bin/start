@@ -1,3 +1,0 @@
-/usr/bin/env source /home/spacekatt/projects/aiohttp_playground/.env
-/usr/bin/gunicorn --pid /run/gunicorn/pid --worker-class aiohttp.GunicornUVLoopWebWorker --bind unix:/run/gunicorn/socket main.APP
-
