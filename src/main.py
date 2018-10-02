@@ -3,6 +3,7 @@ Runs the webserver.
 '''
 from aiohttp import web
 import asyncio
+import uvloop
 
 # Database connection
 import db.psql_client as pg_cli
