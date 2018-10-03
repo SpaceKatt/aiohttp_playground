@@ -2,8 +2,10 @@
 Runs the webserver.
 '''
 from aiohttp import web
+import aiofiles
 import asyncio
-import uvloop
+# import uvloop
+from os import path
 
 # Database connection
 import db.psql_client as pg_cli
@@ -21,7 +23,19 @@ async def root_handle(req):
     '''
     Tells the malcontent to go root themselves off our lawn.
     '''
-    return web.Response(status=400, text='Root off our lawn.\n')
+    try:
+        file_path = path.join(path.dirname(path.abspath(__file__)),
+                              './static/root.html')
+        async with aiofiles.open(file_path, mode='r') as f:
+            content = await f.read()
+            return web.Response(
+                    body=content,
+                    headers={
+                        'Content-Type': 'text/html'
+                    },
+            )
+    except Exception:
+        return web.Response(status=500)
 
 
 async def init_app():
