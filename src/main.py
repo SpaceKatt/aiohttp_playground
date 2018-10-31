@@ -12,6 +12,7 @@ import db.psql_client as pg_cli
 
 # app routes
 import play.main as play
+import play.maze as play_maze
 import auth.main as auth
 
 
@@ -47,6 +48,7 @@ async def init_app():
     app['pool'] = await pg_cli.init_db()
 
     app.add_routes(ROUTES)
+    app.add_routes(play_maze.ROUTES)
     app.add_routes(play.ROUTES)
     app.add_routes(auth.ROUTES)
 
